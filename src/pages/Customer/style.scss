@@ -21,3 +21,21 @@
     }
   }
 }
+
+@media only screen and (max-width: 600px) {
+
+  .container {
+    .add-container {
+      height: 100px;
+      flex-wrap: wrap;
+      align-content: space-between;
+
+      .search-box {
+        margin-left: 0px;
+        width: 100%;
+        max-width: 100%;
+        justify-content: flex-start;
+      }
+    }
+  }
+}
