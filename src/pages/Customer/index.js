@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from '@material-ui/lab/Alert';
-import { MdAdd, MdEdit, MdDelete } from "react-icons/md";
+import { TextField, Button, IconButton, Snackbar } from "@material-ui/core";
+import MuiAlert from "@material-ui/lab/Alert";
+import Pagination from "@material-ui/lab/Pagination";
+import { MdAdd, MdEdit, MdDelete, MdSearch, MdClear } from "react-icons/md";
 import Table from "react-bootstrap/Table";
-import moment from 'moment';
-import Pagination from '@material-ui/lab/Pagination';
+import moment from "moment";
 
 import "./style.scss";
 
@@ -14,20 +12,19 @@ import Header from "../../components/Header";
 import Form from "../../components/Form";
 
 import api from "../../services/api";
-import { getToken } from '../../utils/auth';
-
+import { getToken } from "../../utils/auth";
 
 export default function Customer() {
-
   const [openForm, setOpenForm] = useState(false);
   const [openSnackbar, setOpenSnackBar] = useState(false);
-  const [snackMessage, setSnackMessage] = useState('');
-  const [snackBarType, setSnackBarType] = useState('success');
+  const [snackMessage, setSnackMessage] = useState("");
+  const [snackBarType, setSnackBarType] = useState("success");
 
   const [customers, setCustomers] = useState([]);
   const [customerData, setCustomerData] = useState({});
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState("");
 
   function handleOpenForm(customer = {}) {
     if (Object.keys(customer).length) {
@@ -48,30 +45,49 @@ export default function Customer() {
 
   function handleCloseSnackBar() {
     setOpenSnackBar(false);
-    setSnackMessage('');
+    setSnackMessage("");
   }
 
   async function handleDelete(customer) {
-    if (window.confirm('Deseja realmente deletar?')) {
+    if (window.confirm("Deseja realmente deletar?")) {
       try {
         await api.delete(`api/customer/${customer.id}`, {
           headers: {
             Authorization: `Token ${getToken()}`,
           },
         });
-        setSnackMessage('Cliente deletado com sucesso!');
-        setSnackBarType('success');
+        setSnackMessage("Cliente deletado com sucesso!");
+        setSnackBarType("success");
       } catch (error) {
-        setSnackMessage('Erro ao deletar cliente!');
-        setSnackBarType('error');
+        setSnackMessage("Erro ao deletar cliente!");
+        setSnackBarType("error");
       }
       setOpenSnackBar(true);
-      loadCustomers()
+      loadCustomers();
+    }
+  }
+
+  async function searchCustomer() {
+    try {
+      const {
+        data: { count, results },
+      } = await api.get(`api/customer/?page=1&search=${search}`, {
+        headers: {
+          Authorization: `Token ${getToken()}`,
+        },
+      });
+      setPage(1);
+      setCustomers(results);
+      setTotalPages(Math.ceil(count / 5));
+    } catch (error) {
+      alert("Erro ao tentar fazer a busca! Tente novamente");
     }
   }
 
   async function loadCustomers(pages = 1) {
-    const { data: { count, results } } = await api.get(`api/customer/?page=${pages}`, {
+    const {
+      data: { count, results },
+    } = await api.get(`api/customer/?page=${pages}&search=${search}`, {
       headers: {
         Authorization: `Token ${getToken()}`,
       },
@@ -104,6 +120,23 @@ export default function Customer() {
           >
             Novo cliente
           </Button>
+          <div className="search-box">
+            <TextField
+              variant="outlined"
+              label="Busca"
+              placeholder="Busque por nome, CPF ou telefone"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              size="small"
+              style={{ width: "50%" }}
+            />
+            <Button startIcon={<MdSearch />} onClick={searchCustomer}>
+              Buscar
+            </Button>
+            <Button startIcon={<MdClear />} onClick={() => setSearch("")}>
+              Limpar
+            </Button>
+          </div>
         </div>
 
         <Form
@@ -117,17 +150,13 @@ export default function Customer() {
         />
 
         <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          key={{ vertical: 'bottom', horizontal: 'center' }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          key={{ vertical: "bottom", horizontal: "center" }}
           open={openSnackbar}
           autoHideDuration={6000}
           onClose={handleCloseSnackBar}
         >
-          <MuiAlert
-            severity={snackBarType}
-          >
-            {snackMessage}
-          </MuiAlert>
+          <MuiAlert severity={snackBarType}>{snackMessage}</MuiAlert>
         </Snackbar>
 
         {customers.length ? (
@@ -150,7 +179,7 @@ export default function Customer() {
                     <td>{customer.document}</td>
                     <td>{customer.rg}</td>
                     <td>{customer.phone}</td>
-                    <td>{moment(customer.birthday).format('DD/MM/YYYY')}</td>
+                    <td>{moment(customer.birthday).format("DD/MM/YYYY")}</td>
                     <td>
                       <IconButton
                         size="small"
@@ -173,12 +202,14 @@ export default function Customer() {
                 ))}
               </tbody>
             </Table>
-            <Pagination count={totalPages} page={page} onChange={handlePagination} />
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={handlePagination}
+            />
           </>
         ) : (
-          <h2>
-            Não há nenhum cliente cadastrado
-          </h2>
+          <h2>Não há nenhum cliente cadastrado</h2>
         )}
       </div>
     </>

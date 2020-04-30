@@ -6,6 +6,18 @@
   margin: auto;
 
   .add-container {
+    width: 100%;
     margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .search-box {
+      margin-left: 15px;
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: flex-end;
+    }
   }
 }

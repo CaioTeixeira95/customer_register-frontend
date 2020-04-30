@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { TextField, Button } from '@material-ui/core';
-import { Link, useHistory } from 'react-router-dom';
-import { FiArrowLeft } from 'react-icons/fi';
+import React, { useState } from "react";
+import { TextField, Button } from "@material-ui/core";
+import { Link, useHistory } from "react-router-dom";
+import { FiArrowLeft } from "react-icons/fi";
 
-import api from '../../services/api';
+import api from "../../services/api";
 
-import './styles.scss';
+import "./styles.scss";
 
 export default function Login() {
-  const [name, setName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const history = useHistory();
 
@@ -25,13 +25,13 @@ export default function Login() {
       firstName: name,
       lastName,
       password,
-    }
+    };
 
     try {
-      await api.post('api/register/', data);
-      history.push('/login');
+      await api.post("api/register/", data);
+      history.push("/login");
     } catch (error) {
-      alert('Erro ao cadastrar! Tente novamente');
+      alert("Erro ao cadastrar! Tente novamente");
     }
   }
 
@@ -43,47 +43,47 @@ export default function Login() {
           <TextField
             label="Nome"
             variant="outlined"
-            style={{marginBottom: 8}}
+            style={{ marginBottom: 8 }}
             type="text"
             fullWidth
             value={name}
-            onChange={event => setName(event.target.value)}
+            onChange={(event) => setName(event.target.value)}
           />
           <TextField
             label="Sobrenome"
             variant="outlined"
-            style={{marginBottom: 8}}
+            style={{ marginBottom: 8 }}
             type="text"
             fullWidth
             value={lastName}
-            onChange={event => setLastName(event.target.value)}
+            onChange={(event) => setLastName(event.target.value)}
           />
           <TextField
             label="E-mail"
             variant="outlined"
-            style={{marginBottom: 8}}
+            style={{ marginBottom: 8 }}
             type="email"
             fullWidth
             value={email}
-            onChange={event => setEmail(event.target.value)}
+            onChange={(event) => setEmail(event.target.value)}
           />
           <TextField
             label="Senha"
             variant="outlined"
-            style={{marginBottom: 8}}
+            style={{ marginBottom: 8 }}
             type="password"
             fullWidth
             value={password}
-            onChange={event => setPassword(event.target.value)}
+            onChange={(event) => setPassword(event.target.value)}
           />
           <TextField
             label="Confirme sua senha"
             variant="outlined"
-            style={{marginBottom: 8}}
+            style={{ marginBottom: 8 }}
             type="password"
             fullWidth
             value={confirmPassword}
-            onChange={event => setConfirmPassword(event.target.value)}
+            onChange={(event) => setConfirmPassword(event.target.value)}
           />
           <Button
             size="large"
@@ -101,5 +101,5 @@ export default function Login() {
         </form>
       </div>
     </div>
-  )
+  );
 }

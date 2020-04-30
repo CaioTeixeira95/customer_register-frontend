@@ -32,7 +32,6 @@ export default function Login() {
       alert('Usuário ou senha inválidos!');
     }
 
-
   }
 
   return (
@@ -40,7 +39,7 @@ export default function Login() {
       <div className="image"></div>
       <div className="form">
         <h3>Faça seu login</h3>
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} noValidate>
           <TextField
             label="E-mail"
             variant="outlined"
@@ -48,7 +47,6 @@ export default function Login() {
             type="email"
             value={email}
             onChange={event => setEmail(event.target.value)}
-            required
             fullWidth
           />
           <TextField
@@ -58,7 +56,6 @@ export default function Login() {
             type="password"
             value={password}
             onChange={event => setPassword(event.target.value)}
-            required
             fullWidth
           />
           <Button size="large" type="submit" variant="contained" color="secondary" fullWidth>
